@@ -703,42 +703,20 @@ function displaySearchResults(studios, searchTerm) {
     if (studios.length === 0) {
         resultsSection.style.display = 'block';
         pagination.style.display = 'none';
-        
-        // Check if this is a common non-Ontario location
-        const nonOntarioLocations = [
-            'los angeles', 'la', 'california', 'new york', 'nyc', 'manhattan', 
-            'chicago', 'boston', 'miami', 'dallas', 'houston', 'seattle', 
-            'portland', 'san francisco', 'vancouver', 'montreal', 'calgary',
-            'edmonton', 'winnipeg', 'quebec', 'halifax'
-        ];
-        
-        const queryLower = searchTerm.toLowerCase();
-        const isNonOntarioLocation = nonOntarioLocations.some(location => 
-            queryLower.includes(location) || location.includes(queryLower)
-        );
-        
-        if (isNonOntarioLocation) {
-            studioList.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: #666;">
-                    <h4 style="color: var(--morandi-deep); margin-bottom: 1rem;">🍁 Ontario Specialty</h4>
-                    <p style="margin-bottom: 1rem;">We specialize in <strong>Ontario, Canada</strong> Pilates studios! Our database features 28 carefully curated studios across the province.</p>
-                    <p style="margin-bottom: 1.5rem;">Try searching for Ontario cities like:</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;">
-                        <button onclick="searchLocation('Toronto')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Toronto</button>
-                        <button onclick="searchLocation('Ottawa')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Ottawa</button>
-                        <button onclick="searchLocation('Mississauga')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Mississauga</button>
-                        <button onclick="searchLocation('Hamilton')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Hamilton</button>
-                    </div>
-                    <p style="font-size: 0.9rem; color: var(--morandi-stone);">Or browse our featured studios below.</p>
+        studioList.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: #666;">
+                <h4 style="color: var(--morandi-deep); margin-bottom: 1rem;">🔍 No Studios Found</h4>
+                <p style="margin-bottom: 1rem;">We couldn't find any Pilates studios near <strong>"${searchTerm}"</strong>.</p>
+                <p style="margin-bottom: 1.5rem;">Our specialty is <strong>Ontario, Canada</strong> with 28 curated studios. Try searching for Ontario cities:</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;">
+                    <button onclick="searchLocation('Toronto')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Toronto</button>
+                    <button onclick="searchLocation('Ottawa')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Ottawa</button>
+                    <button onclick="searchLocation('Mississauga')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Mississauga</button>
+                    <button onclick="searchLocation('Hamilton')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Hamilton</button>
                 </div>
-            `;
-        } else {
-            studioList.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: #666;">
-                    <p>No studios found near "${searchTerm}". Try a different location or browse our featured studios below.</p>
-                </div>
-            `;
-        }
+                <p style="font-size: 0.9rem; color: var(--morandi-stone);">Or browse our featured studios below.</p>
+            </div>
+        `;
         return;
     }
 
@@ -1275,16 +1253,21 @@ async function searchNearbyPilatesStudios(location) {
         const radius = document.getElementById('radiusSelect').value;
         console.log('📏 Search radius:', radius + 'm');
         
-        // Use Overpass API to find real fitness/sport facilities
+        // Use Overpass API to find Pilates studios and fitness facilities
         const overpassQuery = `
             [out:json][timeout:25];
             (
+              node[~"name"~"pilates",i](around:${radius},${location.lat},${location.lng});
+              way[~"name"~"pilates",i](around:${radius},${location.lat},${location.lng});
+              relation[~"name"~"pilates",i](around:${radius},${location.lat},${location.lng});
               node["leisure"="fitness_centre"](around:${radius},${location.lat},${location.lng});
               node["leisure"="sports_centre"](around:${radius},${location.lat},${location.lng});
               node["amenity"="fitness_centre"](around:${radius},${location.lat},${location.lng});
               way["leisure"="fitness_centre"](around:${radius},${location.lat},${location.lng});
               way["leisure"="sports_centre"](around:${radius},${location.lat},${location.lng});
               way["amenity"="fitness_centre"](around:${radius},${location.lat},${location.lng});
+              node["shop"="sports"](around:${radius},${location.lat},${location.lng});
+              way["shop"="sports"](around:${radius},${location.lat},${location.lng});
             );
             out center meta;
         `;
@@ -1307,7 +1290,7 @@ async function searchNearbyPilatesStudios(location) {
             // Convert real data to our studio format
             const realStudios = data.elements
                 .filter(element => element.lat && element.lon)
-                .slice(0, 8) // Limit to 8 results
+                .slice(0, 50) // Limit to 50 results for major cities
                 .map((element, index) => ({
                     id: `real_${element.id}`,
                     name: element.tags?.name || `Fitness Studio ${index + 1}`,
