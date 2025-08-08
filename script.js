@@ -92,7 +92,7 @@ const pilatesStudios = [
         website: "https://www.pilatesessentials.ca",
         description: "Fully equipped STOTT® Pilates studio with V2 Max™ Reformers and professional equipment. 25+ years in the fitness industry.",
         amenities: ["STOTT Equipment", "V2 Max Reformers", "25+ Years Experience", "Private & Semi-Private"],
-        image: "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+        image: "🌊",
         zipCodes: ["N8T", "N9A", "N9B", "N8S", "N8X"]
     },
     {
@@ -703,11 +703,42 @@ function displaySearchResults(studios, searchTerm) {
     if (studios.length === 0) {
         resultsSection.style.display = 'block';
         pagination.style.display = 'none';
-        studioList.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: #666;">
-                <p>No studios found near "${searchTerm}". Try a different location or browse our featured studios below.</p>
-            </div>
-        `;
+        
+        // Check if this is a common non-Ontario location
+        const nonOntarioLocations = [
+            'los angeles', 'la', 'california', 'new york', 'nyc', 'manhattan', 
+            'chicago', 'boston', 'miami', 'dallas', 'houston', 'seattle', 
+            'portland', 'san francisco', 'vancouver', 'montreal', 'calgary',
+            'edmonton', 'winnipeg', 'quebec', 'halifax'
+        ];
+        
+        const queryLower = searchTerm.toLowerCase();
+        const isNonOntarioLocation = nonOntarioLocations.some(location => 
+            queryLower.includes(location) || location.includes(queryLower)
+        );
+        
+        if (isNonOntarioLocation) {
+            studioList.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <h4 style="color: var(--morandi-deep); margin-bottom: 1rem;">🍁 Ontario Specialty</h4>
+                    <p style="margin-bottom: 1rem;">We specialize in <strong>Ontario, Canada</strong> Pilates studios! Our database features 28 carefully curated studios across the province.</p>
+                    <p style="margin-bottom: 1.5rem;">Try searching for Ontario cities like:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;">
+                        <button onclick="searchLocation('Toronto')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Toronto</button>
+                        <button onclick="searchLocation('Ottawa')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Ottawa</button>
+                        <button onclick="searchLocation('Mississauga')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Mississauga</button>
+                        <button onclick="searchLocation('Hamilton')" style="padding: 0.5rem 1rem; background: var(--morandi-sage); color: white; border: none; border-radius: 6px; cursor: pointer;">Hamilton</button>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--morandi-stone);">Or browse our featured studios below.</p>
+                </div>
+            `;
+        } else {
+            studioList.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <p>No studios found near "${searchTerm}". Try a different location or browse our featured studios below.</p>
+                </div>
+            `;
+        }
         return;
     }
 
@@ -813,6 +844,12 @@ function changePage(newPage) {
     
     // Scroll to top of results
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Helper function for quick city search buttons
+function searchLocation(cityName) {
+    document.getElementById('locationInput').value = cityName;
+    handleSearch();
 }
 
 function createStudioCard(studio) {
