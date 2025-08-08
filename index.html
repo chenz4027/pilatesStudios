@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pilates Studio Finder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>🧘‍♀️ Pilates Studio Finder</h1>
+            </div>
+            <div class="nav-links">
+                <a href="https://chenz4027.github.io" target="_blank" class="portfolio-link">← Back to Portfolio</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Find Your Perfect Pilates Studio</h2>
+                <p>Discover amazing Pilates studios around the globe, complete with reviews, amenities, and location details.</p>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="locationInput" placeholder="Enter your zip code or city" class="location-input">
+                        <button id="searchBtn" class="search-btn">Search Studios</button>
+                    </div>
+                    <button id="useLocationBtn" class="location-btn">📍 Use My Location</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="results" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h3>Pilates Studios Near You</h3>
+                <div class="view-toggle">
+                    <button id="listViewBtn" class="view-btn active">List View</button>
+                    <button id="mapViewBtn" class="view-btn">Map View</button>
+                </div>
+            </div>
+            
+            <div class="results-content">
+                <div id="studioList" class="studio-list"></div>
+                <div id="mapContainer" class="map-container" style="display: none;"></div>
+            </div>
+        </section>
+
+        <section class="featured-studios">
+            <h3>Featured Studios Around the World</h3>
+            <div class="featured-grid" id="featuredGrid">
+                <!-- Featured studios will be populated by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Pilates Studio Finder. Created by <a href="https://chenz4027.github.io" target="_blank">Chen Zhang</a></p>
+            <div class="footer-links">
+                <a href="#" onclick="showAbout()">About</a>
+                <a href="#" onclick="showContact()">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for studio details -->
+    <div id="studioModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="studioDetails"></div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Finding studios near you...</p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
