@@ -28,9 +28,13 @@
                 <p>Discover amazing Pilates studios around the globe, complete with reviews, amenities, and location details.</p>
                 
                 <div class="search-container">
-                                    <div class="search-box">
-                    <input type="text" id="locationInput" placeholder="Enter your zip code or city" class="location-input">
-                    <button id="searchBtn" class="search-btn">Search Studios</button>
+                    <div class="search-box">
+                        <div class="input-wrapper">
+                            <input type="text" id="locationInput" placeholder="Enter your zip code or city" class="location-input" autocomplete="off">
+                            <div id="autocompleteDropdown" class="autocomplete-dropdown" style="display: none;"></div>
+                        </div>
+                        <button id="searchBtn" class="search-btn">Search Studios</button>
+                    </div>
                 </div>
                 <div class="search-options">
                     <button id="useLocationBtn" class="location-btn">📍 Use My Location</button>

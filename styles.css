@@ -141,14 +141,86 @@ body {
     gap: 0.5rem;
 }
 
-.location-input {
+.input-wrapper {
     flex: 1;
+    position: relative;
+}
+
+.location-input {
+    width: 100%;
     padding: 1rem;
     border: none;
     border-radius: 12px;
     font-size: 1rem;
     background: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.location-input:focus {
+    outline: none;
+    box-shadow: 0 4px 25px rgba(184, 200, 216, 0.4);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Autocomplete Dropdown */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 4px;
+    border: 1px solid var(--morandi-mist);
+}
+
+.autocomplete-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--morandi-dust);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: var(--morandi-dust);
+    color: var(--morandi-deep);
+}
+
+.autocomplete-item.highlighted {
+    background: var(--morandi-sage);
+    color: white;
+}
+
+.autocomplete-city {
+    font-weight: 600;
+    color: var(--morandi-deep);
+}
+
+.autocomplete-country {
+    font-size: 0.9rem;
+    color: var(--morandi-stone);
+}
+
+.autocomplete-count {
+    margin-left: auto;
+    background: var(--morandi-accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 .search-btn, .location-btn {

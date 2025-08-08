@@ -6,6 +6,10 @@ let googleMap = null;
 let placesService = null;
 let geocoder = null;
 
+// Autocomplete variables
+let autocompleteTimeout;
+let currentHighlight = -1;
+
 // Pagination variables
 let currentPage = 1;
 let studiosPerPage = 5;
@@ -63,6 +67,62 @@ const cityAliases = {
 const cityCenters = {
     ...(typeof globalCityCenters !== 'undefined' ? globalCityCenters : {})
 };
+
+// Create searchable cities list for autocomplete
+const createSearchableCities = () => {
+    const cities = [];
+    
+    // Add major cities data
+    Object.keys(majorCitiesData).forEach(cityKey => {
+        const studioCount = majorCitiesData[cityKey].length;
+        cities.push({
+            name: cityKey,
+            displayName: cityKey.charAt(0).toUpperCase() + cityKey.slice(1),
+            country: getCityCountry(cityKey),
+            studioCount: studioCount,
+            type: 'major'
+        });
+    });
+    
+    // Add Ontario cities
+    const ontarioCities = ['Toronto', 'Ottawa', 'Mississauga', 'Hamilton', 'London', 'Kitchener', 'Windsor', 'Sudbury'];
+    ontarioCities.forEach(city => {
+        if (!cities.find(c => c.name.toLowerCase() === city.toLowerCase())) {
+            cities.push({
+                name: city.toLowerCase(),
+                displayName: city,
+                country: 'Canada',
+                studioCount: pilatesStudios.filter(s => s.address.includes(city)).length,
+                type: 'ontario'
+            });
+        }
+    });
+    
+    // Sort by studio count (descending) then alphabetically
+    return cities.sort((a, b) => {
+        if (b.studioCount !== a.studioCount) {
+            return b.studioCount - a.studioCount;
+        }
+        return a.displayName.localeCompare(b.displayName);
+    });
+};
+
+const getCityCountry = (cityKey) => {
+    const countryMap = {
+        'new york': 'USA', 'los angeles': 'USA', 'chicago': 'USA', 'san francisco': 'USA', 
+        'miami': 'USA', 'las vegas': 'USA', 'washington': 'USA',
+        'london': 'UK', 'paris': 'France', 'berlin': 'Germany', 'madrid': 'Spain', 
+        'rome': 'Italy', 'amsterdam': 'Netherlands', 'barcelona': 'Spain', 
+        'munich': 'Germany', 'milan': 'Italy', 'vienna': 'Austria',
+        'tokyo': 'Japan', 'osaka': 'Japan', 'seoul': 'South Korea', 
+        'singapore': 'Singapore', 'hong kong': 'Hong Kong', 'bangkok': 'Thailand',
+        'dubai': 'UAE', 'sydney': 'Australia', 'melbourne': 'Australia',
+        'toronto': 'Canada', 'vancouver': 'Canada', 'montreal': 'Canada'
+    };
+    return countryMap[cityKey] || 'Global';
+};
+
+const searchableCities = createSearchableCities();
 
 // Real Ontario Pilates Studios Data - Sourced from web research January 2025
 const pilatesStudios = [
@@ -488,12 +548,125 @@ const pilatesStudios = [
     }
 ];
 
+// Autocomplete functionality
+function initializeAutocomplete() {
+    const locationInput = document.getElementById('locationInput');
+    const dropdown = document.getElementById('autocompleteDropdown');
+    
+    locationInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim().toLowerCase();
+        
+        // Clear previous timeout
+        clearTimeout(autocompleteTimeout);
+        
+        if (query.length < 2) {
+            hideAutocomplete();
+            return;
+        }
+        
+        // Debounce the search
+        autocompleteTimeout = setTimeout(() => {
+            showAutocomplete(query);
+        }, 150);
+    });
+    
+    // Handle keyboard navigation
+    locationInput.addEventListener('keydown', function(e) {
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentHighlight = Math.min(currentHighlight + 1, items.length - 1);
+            updateHighlight(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentHighlight = Math.max(currentHighlight - 1, -1);
+            updateHighlight(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentHighlight >= 0 && items[currentHighlight]) {
+                selectCity(items[currentHighlight].dataset.city);
+            } else {
+                handleSearch();
+            }
+        } else if (e.key === 'Escape') {
+            hideAutocomplete();
+        }
+    });
+    
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.input-wrapper')) {
+            hideAutocomplete();
+        }
+    });
+}
+
+function showAutocomplete(query) {
+    const dropdown = document.getElementById('autocompleteDropdown');
+    
+    // Filter cities based on query
+    const matches = searchableCities.filter(city => {
+        return city.displayName.toLowerCase().includes(query) ||
+               city.country.toLowerCase().includes(query) ||
+               city.name.toLowerCase().includes(query);
+    }).slice(0, 8); // Limit to 8 results
+    
+    if (matches.length === 0) {
+        hideAutocomplete();
+        return;
+    }
+    
+    // Generate dropdown HTML
+    const html = matches.map(city => `
+        <div class="autocomplete-item" data-city="${city.name}" onclick="selectCity('${city.name}')">
+            <div>
+                <div class="autocomplete-city">${city.displayName}</div>
+                <div class="autocomplete-country">${city.country}</div>
+            </div>
+            <div class="autocomplete-count">${city.studioCount}</div>
+        </div>
+    `).join('');
+    
+    dropdown.innerHTML = html;
+    dropdown.style.display = 'block';
+    currentHighlight = -1;
+}
+
+function hideAutocomplete() {
+    const dropdown = document.getElementById('autocompleteDropdown');
+    dropdown.style.display = 'none';
+    currentHighlight = -1;
+}
+
+function updateHighlight(items) {
+    items.forEach((item, index) => {
+        item.classList.toggle('highlighted', index === currentHighlight);
+    });
+}
+
+function selectCity(cityName) {
+    const locationInput = document.getElementById('locationInput');
+    const city = searchableCities.find(c => c.name === cityName);
+    
+    if (city) {
+        locationInput.value = city.displayName;
+        hideAutocomplete();
+        
+        // Trigger search automatically
+        setTimeout(() => {
+            handleSearch();
+        }, 100);
+    }
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 App starting...');
     initializeApp();
     loadFeaturedStudios();
     setupEventListeners();
+    initializeAutocomplete();
     loadGoogleMapsAPI();
     
     // Test map immediately for debugging
