@@ -18,14 +18,10 @@ const USE_FREE_APIS = true; // Set to true to use free OpenStreetMap + Nominatim
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 const OVERPASS_BASE_URL = 'https://overpass-api.de/api/interpreter';
 
-// Debug: Check if globalCitiesData is loaded
-console.log('🌍 Global cities data loaded:', typeof globalCitiesData !== 'undefined');
-console.log('🌍 Available global cities:', globalCitiesData ? Object.keys(globalCitiesData) : 'NOT LOADED');
-
 // Merge global cities data with existing major cities data
 const majorCitiesData = {
     // Merge existing data with global data
-    ...globalCitiesData,
+    ...(typeof globalCitiesData !== 'undefined' ? globalCitiesData : {}),
     'new york': [
         { id: 'ny1', name: 'Pure Yoga', address: '203 E 86th St, New York, NY 10028', lat: 40.7831, lng: -73.9527, rating: '4.2', reviews: 450, phone: '(212) 769-2200', website: 'https://pureyoga.com', description: 'Premium yoga and Pilates studio in the Upper East Side offering classes for all levels.', amenities: ['Mat Rental', 'Changing Rooms', 'Showers'], image: '🧘‍♀️', distance: '0.5 miles', source: 'Curated' },
         { id: 'ny2', name: 'SLT Studio', address: '25 E 73rd St, New York, NY 10021', lat: 40.7738, lng: -73.9668, rating: '4.4', reviews: 320, phone: '(212) 772-7005', website: 'https://sltmethod.com', description: 'High-intensity, low-impact Pilates-inspired workout using the Megaformer machine.', amenities: ['Equipment Provided', 'Towel Service', 'Water'], image: '💪', distance: '0.8 miles', source: 'Curated' },
@@ -60,12 +56,12 @@ const majorCitiesData = {
 
 // City aliases for better search matching (merge global with existing)
 const cityAliases = {
-    ...globalCityAliases
+    ...(typeof globalCityAliases !== 'undefined' ? globalCityAliases : {})
 };
 
 // City center coordinates for map centering (merge global with existing)
 const cityCenters = {
-    ...globalCityCenters
+    ...(typeof globalCityCenters !== 'undefined' ? globalCityCenters : {})
 };
 
 // Real Ontario Pilates Studios Data - Sourced from web research January 2025
@@ -617,13 +613,8 @@ async function handleSearch() {
             }
         }
         
-        // Debug: Show what we're looking for
-        console.log('🔍 Target city after alias mapping:', targetCity);
-        console.log('🏙️ Available major cities:', Object.keys(majorCitiesData));
-        
         // Now check for the actual city data
         for (const [cityKey, cityStudios] of Object.entries(majorCitiesData)) {
-            console.log('🔄 Checking:', targetCity, 'vs', cityKey);
             if (targetCity.includes(cityKey) || cityKey.includes(targetCity)) {
                 console.log('⚡ Found curated data for', cityKey, '- showing', cityStudios.length, 'studios instantly!');
                 
@@ -922,7 +913,8 @@ function searchLocation(cityName) {
 
 function createStudioCard(studio) {
     const stars = '★'.repeat(Math.floor(studio.rating)) + '☆'.repeat(5 - Math.floor(studio.rating));
-    const distanceText = studio.distance ? `${studio.distance.toFixed(1)} miles away` : '';
+    const distanceText = studio.distance ? 
+        (typeof studio.distance === 'number' ? `${studio.distance.toFixed(1)} miles away` : studio.distance) : '';
     const isRealData = studio.source === 'OpenStreetMap';
     
     const dataSourceBadge = isRealData ? 
