@@ -136,7 +136,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Chen Zhang**
+**Maggie Chen**
 - Portfolio: [https://chenz4027.github.io](https://chenz4027.github.io)
 - GitHub: [@chenz4027](https://github.com/chenz4027)
 
@@ -149,4 +149,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-*Built with ❤️ for the Pilates community worldwide*
+*Built with ❤️ by Maggie Chen for the Pilates community worldwide*

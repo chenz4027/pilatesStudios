@@ -568,7 +568,7 @@ function showAbout() {
 }
 
 function showContact() {
-    alert('Contact: Visit https://chenz4027.github.io for more information or to get in touch.');
+    alert('Contact: Visit https://chenz4027.github.io for more information or to get in touch with Maggie Chen.');
 }
 
 // Google Maps API integration functions
