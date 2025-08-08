@@ -64,6 +64,13 @@ const cityAliases = {
     'windy city': 'chicago'
 };
 
+// City center coordinates for map centering
+const cityCenters = {
+    'new york': { lat: 40.7589, lng: -73.9851 }, // Times Square area
+    'los angeles': { lat: 34.0522, lng: -118.2437 }, // Downtown LA
+    'chicago': { lat: 41.8781, lng: -87.6298 } // Downtown Chicago
+};
+
 // Real Ontario Pilates Studios Data - Sourced from web research January 2025
 const pilatesStudios = [
     {
@@ -617,6 +624,13 @@ async function handleSearch() {
         for (const [cityKey, cityStudios] of Object.entries(majorCitiesData)) {
             if (targetCity.includes(cityKey) || cityKey.includes(targetCity)) {
                 console.log('⚡ Found curated data for', cityKey, '- showing', cityStudios.length, 'studios instantly!');
+                
+                // Set user location to city center for map centering
+                if (cityCenters[cityKey]) {
+                    userLocation = cityCenters[cityKey];
+                    console.log('🗺️ Set map center to', cityKey, 'coordinates:', userLocation);
+                }
+                
                 displaySearchResults(cityStudios, query);
                 showLoading(false);
                 return;
@@ -801,6 +815,10 @@ function displaySearchResults(studios, searchTerm) {
     
     // Set up pagination
     setupPagination();
+    
+    // Update the map with new search results
+    console.log('🗺️ Updating map for search results...');
+    initializeMap();
     
     // Scroll to results
     resultsSection.scrollIntoView({ behavior: 'smooth' });
