@@ -551,3 +551,89 @@ body {
         padding: 1.5rem;
     }
 }
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--morandi-cream);
+}
+
+.pagination-info {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--morandi-stone);
+    font-size: 0.9rem;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--morandi-clay);
+    background: white;
+    color: var(--morandi-deep);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--morandi-sage);
+    color: white;
+    border-color: var(--morandi-sage);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--morandi-cream);
+    color: var(--morandi-stone);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.page-number {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--morandi-clay);
+    background: white;
+    color: var(--morandi-deep);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.page-number:hover {
+    background: var(--morandi-sage);
+    color: white;
+    border-color: var(--morandi-sage);
+}
+
+.page-number.active {
+    background: var(--morandi-deep);
+    color: white;
+    border-color: var(--morandi-deep);
+}
+
+@media (max-width: 768px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .page-numbers {
+        order: -1;
+    }
+}

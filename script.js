@@ -6,6 +6,13 @@ let googleMap = null;
 let placesService = null;
 let geocoder = null;
 
+// Pagination variables
+let currentPage = 1;
+let studiosPerPage = 5;
+let totalStudios = 0;
+let allStudios = [];
+let currentSearchTerm = '';
+
 // Free APIs configuration
 const USE_FREE_APIS = true; // Set to true to use free OpenStreetMap + Nominatim APIs
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
@@ -683,12 +690,19 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
 }
 
 function displaySearchResults(studios, searchTerm) {
-    currentStudios = studios;
+    // Store all studios for pagination
+    allStudios = studios;
+    totalStudios = studios.length;
+    currentSearchTerm = searchTerm;
+    currentPage = 1; // Reset to first page
+    
     const resultsSection = document.getElementById('resultsSection');
     const studioList = document.getElementById('studioList');
+    const pagination = document.getElementById('pagination');
     
     if (studios.length === 0) {
         resultsSection.style.display = 'block';
+        pagination.style.display = 'none';
         studioList.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: #666;">
                 <p>No studios found near "${searchTerm}". Try a different location or browse our featured studios below.</p>
@@ -703,11 +717,27 @@ function displaySearchResults(studios, searchTerm) {
     document.querySelector('.results-header h3').textContent = 
         `${studios.length} Pilates Studio${studios.length !== 1 ? 's' : ''} Near "${searchTerm}"`;
     
-    // Generate studio cards
-    studioList.innerHTML = studios.map(studio => createStudioCard(studio)).join('');
+    // Display paginated results
+    displayCurrentPage();
     
-    // Update currentStudios so map can access the data
-    currentStudios = studios;
+    // Set up pagination
+    setupPagination();
+    
+    // Scroll to results
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function displayCurrentPage() {
+    const studioList = document.getElementById('studioList');
+    const startIndex = (currentPage - 1) * studiosPerPage;
+    const endIndex = Math.min(startIndex + studiosPerPage, totalStudios);
+    
+    // Get studios for current page
+    const pageStudios = allStudios.slice(startIndex, endIndex);
+    currentStudios = pageStudios; // Update for map display
+    
+    // Generate studio cards for current page
+    studioList.innerHTML = pageStudios.map(studio => createStudioCard(studio)).join('');
     
     // Add click listeners to studio cards
     document.querySelectorAll('.studio-card').forEach(card => {
@@ -716,9 +746,73 @@ function displaySearchResults(studios, searchTerm) {
             showStudioDetails(studioId);
         });
     });
+}
 
-    // Scroll to results
-    resultsSection.scrollIntoView({ behavior: 'smooth' });
+function setupPagination() {
+    const pagination = document.getElementById('pagination');
+    const paginationInfo = document.getElementById('paginationInfo');
+    const pageNumbers = document.getElementById('pageNumbers');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    
+    if (totalStudios <= studiosPerPage) {
+        pagination.style.display = 'none';
+        return;
+    }
+    
+    pagination.style.display = 'block';
+    
+    const totalPages = Math.ceil(totalStudios / studiosPerPage);
+    const startIndex = (currentPage - 1) * studiosPerPage + 1;
+    const endIndex = Math.min(currentPage * studiosPerPage, totalStudios);
+    
+    // Update pagination info
+    paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${totalStudios} studios`;
+    
+    // Generate page numbers
+    generatePageNumbers(totalPages, pageNumbers);
+    
+    // Update button states
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+    
+    // Add event listeners
+    prevBtn.onclick = () => changePage(currentPage - 1);
+    nextBtn.onclick = () => changePage(currentPage + 1);
+}
+
+function generatePageNumbers(totalPages, container) {
+    container.innerHTML = '';
+    
+    // Show max 5 page numbers at a time
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    
+    // Adjust start if we're near the end
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => changePage(i);
+        container.appendChild(pageBtn);
+    }
+}
+
+function changePage(newPage) {
+    const totalPages = Math.ceil(totalStudios / studiosPerPage);
+    
+    if (newPage < 1 || newPage > totalPages) return;
+    
+    currentPage = newPage;
+    displayCurrentPage();
+    setupPagination();
+    
+    // Scroll to top of results
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
 }
 
 function createStudioCard(studio) {
