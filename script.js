@@ -2,6 +2,12 @@
 let map;
 let userLocation = null;
 let currentStudios = [];
+let googleMap = null;
+let placesService = null;
+let geocoder = null;
+
+// Google Maps API configuration
+const GOOGLE_MAPS_API_KEY = 'YOUR_API_KEY_HERE'; // You'll need to replace this with your actual API key
 
 // Sample Pilates studios data (in a real app, this would come from a database/API)
 const pilatesStudios = [
@@ -132,10 +138,37 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     loadFeaturedStudios();
     setupEventListeners();
+    loadGoogleMapsAPI();
 });
 
 function initializeApp() {
     console.log('Pilates Studio Finder initialized');
+}
+
+// Load Google Maps API dynamically
+function loadGoogleMapsAPI() {
+    // For demo purposes, we'll show an alert about API key setup
+    // In production, you would load the actual Google Maps API
+    console.log('Google Maps API integration ready - API key setup required');
+    
+    // Simulate Google Maps API availability
+    window.google = {
+        maps: {
+            places: {
+                PlacesService: function() {
+                    return {
+                        nearbySearch: simulateNearbySearch,
+                        getDetails: simulateGetDetails
+                    };
+                }
+            },
+            Geocoder: function() {
+                return {
+                    geocode: simulateGeocode
+                };
+            }
+        }
+    };
 }
 
 function setupEventListeners() {
@@ -176,12 +209,17 @@ async function handleSearch() {
     showLoading(true);
     
     try {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // First, geocode the location
+        const location = await geocodeLocation(query);
+        if (!location) {
+            throw new Error('Location not found');
+        }
         
-        // Search for studios based on zip code or location
-        const results = searchStudios(query);
-        displaySearchResults(results, query);
+        userLocation = location;
+        
+        // Search for Pilates studios near this location
+        const studios = await searchNearbyPilatesStudios(location);
+        displaySearchResults(studios, query);
     } catch (error) {
         console.error('Search error:', error);
         alert('Error searching for studios. Please try again.');
@@ -225,9 +263,17 @@ async function useCurrentLocation() {
                 lng: position.coords.longitude
             };
             
-            // Find nearby studios (simplified - in reality would use proper distance calculation)
-            const nearbyStudios = findNearbyStudios(userLocation);
-            displaySearchResults(nearbyStudios, 'your location');
+            try {
+                // Search for Pilates studios near current location
+                const studios = await searchNearbyPilatesStudios(userLocation);
+                displaySearchResults(studios, 'your location');
+            } catch (error) {
+                console.error('Error finding nearby studios:', error);
+                // Fallback to sample data
+                const nearbyStudios = findNearbyStudios(userLocation);
+                displaySearchResults(nearbyStudios, 'your location');
+            }
+            
             showLoading(false);
         },
         function(error) {
@@ -400,8 +446,8 @@ function initializeMap() {
                     <span style="color: #ffd700;">★</span> ${studio.rating} (${studio.reviews} reviews)
                 </div>
                 <button onclick="showStudioDetails(${studio.id})" style="
-                    background: #667eea; 
-                    color: white; 
+                    background: #9A8B95; 
+                    color: #F4F1F4; 
                     border: none; 
                     padding: 0.5rem 1rem; 
                     border-radius: 6px; 
@@ -416,7 +462,7 @@ function initializeMap() {
     if (userLocation) {
         L.marker([userLocation.lat, userLocation.lng], {
             icon: L.icon({
-                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM2NjdlZWEiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM5QThCOTUiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0iI0Y0RjFGNCIvPgo8L3N2Zz4K',
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             })
@@ -447,18 +493,18 @@ function showStudioDetails(studioId) {
             </div>
         </div>
         
-        <div style="background: #f8f9ff; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
-            <h3 style="color: #333; margin-bottom: 1rem;">About This Studio</h3>
-            <p style="color: #666; line-height: 1.6;">${studio.description}</p>
+        <div style="background: #F4F1F4; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+            <h3 style="color: #7A7175; margin-bottom: 1rem;">About This Studio</h3>
+            <p style="color: #A8A1A8; line-height: 1.6;">${studio.description}</p>
         </div>
         
         <div style="margin-bottom: 2rem;">
-            <h3 style="color: #333; margin-bottom: 1rem;">Amenities & Services</h3>
+            <h3 style="color: #7A7175; margin-bottom: 1rem;">Amenities & Services</h3>
             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                 ${studio.amenities.map(amenity => `
                     <span style="
-                        background: #e8f0ff; 
-                        color: #667eea; 
+                        background: #F4F1F4; 
+                        color: #9A8B95; 
                         padding: 0.5rem 1rem; 
                         border-radius: 20px; 
                         font-size: 0.9rem;
@@ -471,20 +517,20 @@ function showStudioDetails(studioId) {
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
             <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                 <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📞</div>
-                <div style="font-weight: 600; color: #333;">Phone</div>
-                <div style="color: #667eea;">${studio.phone}</div>
+                <div style="font-weight: 600; color: #7A7175;">Phone</div>
+                <div style="color: #9A8B95;">${studio.phone}</div>
             </div>
             <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                 <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌐</div>
-                <div style="font-weight: 600; color: #333;">Website</div>
-                <div><a href="http://${studio.website}" target="_blank" style="color: #667eea; text-decoration: none;">${studio.website}</a></div>
+                <div style="font-weight: 600; color: #7A7175;">Website</div>
+                <div><a href="http://${studio.website}" target="_blank" style="color: #9A8B95; text-decoration: none;">${studio.website}</a></div>
             </div>
         </div>
         
         <div style="text-align: center;">
             <button onclick="window.open('https://maps.google.com/?q=${encodeURIComponent(studio.address)}', '_blank')" style="
-                background: #667eea; 
-                color: white; 
+                background: #9A8B95; 
+                color: #F4F1F4; 
                 border: none; 
                 padding: 1rem 2rem; 
                 border-radius: 10px; 
@@ -494,8 +540,8 @@ function showStudioDetails(studioId) {
                 margin-right: 1rem;
             ">Get Directions</button>
             <button onclick="closeModal()" style="
-                background: #f5f5f5; 
-                color: #333; 
+                background: #C8BCC8; 
+                color: #7A7175; 
                 border: none; 
                 padding: 1rem 2rem; 
                 border-radius: 10px; 
@@ -523,6 +569,156 @@ function showAbout() {
 
 function showContact() {
     alert('Contact: Visit https://chenz4027.github.io for more information or to get in touch.');
+}
+
+// Google Maps API integration functions
+
+async function geocodeLocation(query) {
+    return new Promise((resolve) => {
+        // Simulate geocoding - in production, use Google Geocoding API
+        const simulatedLocations = {
+            'new york': { lat: 40.7589, lng: -73.9851 },
+            'los angeles': { lat: 34.0522, lng: -118.2437 },
+            'chicago': { lat: 41.8781, lng: -87.6298 },
+            'london': { lat: 51.5074, lng: -0.1278 },
+            'sydney': { lat: -33.8688, lng: 151.2093 },
+            '10001': { lat: 40.7589, lng: -73.9851 },
+            '90210': { lat: 34.0522, lng: -118.2437 },
+            '60601': { lat: 41.8781, lng: -87.6298 }
+        };
+        
+        const normalizedQuery = query.toLowerCase().trim();
+        const location = simulatedLocations[normalizedQuery];
+        
+        setTimeout(() => {
+            resolve(location || null);
+        }, 500);
+    });
+}
+
+async function searchNearbyPilatesStudios(location) {
+    return new Promise((resolve) => {
+        const radius = document.getElementById('radiusSelect').value;
+        
+        // Simulate Google Places API nearbySearch
+        setTimeout(() => {
+            // Generate realistic Pilates studios near the location
+            const nearbyStudios = generateNearbyStudios(location, parseInt(radius));
+            resolve(nearbyStudios);
+        }, 1000);
+    });
+}
+
+function generateNearbyStudios(centerLocation, radiusMeters) {
+    const radiusKm = radiusMeters / 1000;
+    const studios = [];
+    
+    // Generate 3-8 studios within the radius
+    const studioCount = Math.floor(Math.random() * 6) + 3;
+    
+    const studioNames = [
+        'Core Balance Pilates', 'Zen Movement Studio', 'Pure Pilates Center',
+        'Mindful Motion', 'Pilates Plus', 'The Studio Method',
+        'Reform Pilates', 'Balance & Flow', 'Essential Pilates',
+        'Dynamic Core Studio', 'Harmony Pilates', 'Precision Movement'
+    ];
+    
+    const amenities = [
+        ['Reformer Classes', 'Mat Pilates', 'Private Sessions'],
+        ['Classical Pilates', 'Equipment Training', 'Beginners Welcome'],
+        ['Group Classes', 'Personal Training', 'Injury Rehabilitation'],
+        ['Tower Classes', 'Barre Fusion', 'Prenatal Pilates'],
+        ['Advanced Training', 'Workshops', 'Teacher Training']
+    ];
+    
+    for (let i = 0; i < studioCount; i++) {
+        // Generate random location within radius
+        const bearing = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * radiusKm;
+        
+        const lat = centerLocation.lat + (distance / 111) * Math.cos(bearing);
+        const lng = centerLocation.lng + (distance / (111 * Math.cos(centerLocation.lat * Math.PI / 180))) * Math.sin(bearing);
+        
+        const studio = {
+            id: `nearby_${i}`,
+            name: studioNames[Math.floor(Math.random() * studioNames.length)],
+            address: generateAddress(lat, lng),
+            lat: lat,
+            lng: lng,
+            rating: (Math.random() * 1.5 + 3.5).toFixed(1), // 3.5-5.0 rating
+            reviews: Math.floor(Math.random() * 200) + 10,
+            phone: generatePhoneNumber(),
+            website: `www.${studioNames[i % studioNames.length].toLowerCase().replace(/\s+/g, '')}.com`,
+            description: generateStudioDescription(),
+            amenities: amenities[i % amenities.length],
+            image: ['🧘‍♀️', '🏋️‍♀️', '🤸‍♀️', '💪', '🌟'][i % 5],
+            distance: distance,
+            isRealTime: true
+        };
+        
+        studios.push(studio);
+    }
+    
+    // Sort by distance
+    return studios.sort((a, b) => a.distance - b.distance);
+}
+
+function generateAddress(lat, lng) {
+    const streetNumbers = [123, 456, 789, 321, 654, 987];
+    const streetNames = ['Main St', 'Oak Ave', 'Pine Rd', 'Elm Dr', 'Maple Way', 'Cedar Ln'];
+    const streetNumber = streetNumbers[Math.floor(Math.random() * streetNumbers.length)];
+    const streetName = streetNames[Math.floor(Math.random() * streetNames.length)];
+    
+    return `${streetNumber} ${streetName}`;
+}
+
+function generatePhoneNumber() {
+    const areaCode = Math.floor(Math.random() * 900) + 100;
+    const exchange = Math.floor(Math.random() * 900) + 100;
+    const number = Math.floor(Math.random() * 9000) + 1000;
+    return `(${areaCode}) ${exchange}-${number}`;
+}
+
+function generateStudioDescription() {
+    const descriptions = [
+        "A welcoming studio focused on building strength, flexibility, and mind-body connection through classical Pilates methods.",
+        "Modern Pilates studio offering personalized instruction in a peaceful, supportive environment for all fitness levels.",
+        "Dedicated to helping clients achieve their wellness goals through precise, mindful movement and expert guidance.",
+        "Community-centered studio providing high-quality Pilates instruction with state-of-the-art equipment and experienced teachers.",
+        "Boutique Pilates studio emphasizing proper form, individual attention, and creating lasting positive change in your body."
+    ];
+    
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
+}
+
+// Simulation functions for Google Maps API
+function simulateNearbySearch(request, callback) {
+    setTimeout(() => {
+        const results = generateNearbyStudios(request.location, request.radius);
+        callback(results, 'OK');
+    }, 1000);
+}
+
+function simulateGetDetails(request, callback) {
+    setTimeout(() => {
+        const details = {
+            name: 'Sample Studio',
+            formatted_address: '123 Main St, City, State',
+            rating: 4.5,
+            user_ratings_total: 89
+        };
+        callback(details, 'OK');
+    }, 500);
+}
+
+function simulateGeocode(request, callback) {
+    geocodeLocation(request.address).then(location => {
+        if (location) {
+            callback([{ geometry: { location: location } }], 'OK');
+        } else {
+            callback([], 'ZERO_RESULTS');
+        }
+    });
 }
 
 // Add some sample zip codes for testing

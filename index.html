@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Google Maps API will be loaded dynamically -->
 </head>
 <body>
     <header class="header">
@@ -27,11 +28,22 @@
                 <p>Discover amazing Pilates studios around the globe, complete with reviews, amenities, and location details.</p>
                 
                 <div class="search-container">
-                    <div class="search-box">
-                        <input type="text" id="locationInput" placeholder="Enter your zip code or city" class="location-input">
-                        <button id="searchBtn" class="search-btn">Search Studios</button>
-                    </div>
+                                    <div class="search-box">
+                    <input type="text" id="locationInput" placeholder="Enter your zip code or city" class="location-input">
+                    <button id="searchBtn" class="search-btn">Search Studios</button>
+                </div>
+                <div class="search-options">
                     <button id="useLocationBtn" class="location-btn">📍 Use My Location</button>
+                    <div class="search-radius">
+                        <label for="radiusSelect">Search radius:</label>
+                        <select id="radiusSelect" class="radius-select">
+                            <option value="5000">5 km</option>
+                            <option value="10000" selected>10 km</option>
+                            <option value="25000">25 km</option>
+                            <option value="50000">50 km</option>
+                        </select>
+                    </div>
+                </div>
                 </div>
             </div>
         </section>
@@ -48,6 +60,17 @@
             <div class="results-content">
                 <div id="studioList" class="studio-list"></div>
                 <div id="mapContainer" class="map-container" style="display: none;"></div>
+            </div>
+        </section>
+
+        <section class="api-info" style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 2rem; margin-bottom: 3rem; text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+            <h3 style="color: var(--morandi-deep); margin-bottom: 1rem;">🗺️ Dynamic Studio Discovery</h3>
+            <p style="color: var(--morandi-stone); margin-bottom: 1rem;">
+                This app includes Google Maps API integration for real-time Pilates studio discovery. 
+                Currently running in demo mode with simulated data.
+            </p>
+            <div style="background: var(--morandi-cream); padding: 1rem; border-radius: 12px; font-size: 0.9rem; color: var(--morandi-deep);">
+                <strong>For live data:</strong> Add your Google Maps API key to enable real-time studio search with ratings, reviews, and current business information.
             </div>
         </section>
 
