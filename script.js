@@ -293,7 +293,7 @@ async function useCurrentLocation() {
                 displaySearchResults(studios, 'your location');
             } catch (error) {
                 console.error('Error finding nearby studios:', error);
-                // Fallback to sample data
+                // Fallback to Ontario data
                 const nearbyStudios = findNearbyStudios(userLocation);
                 displaySearchResults(nearbyStudios, 'your location');
             }
@@ -377,7 +377,7 @@ function createStudioCard(studio) {
     
     const dataSourceBadge = isRealData ? 
         '<span class="tag" style="background: #4AF450; color: white;">🌍 Real Data</span>' : 
-        '<span class="tag" style="background: #9A8B95; color: white;">📋 Sample</span>';
+        '<span class="tag" style="background: #9A8B95; color: white;">🍁 Ontario</span>';
     
     return `
         <div class="studio-card" data-studio-id="${studio.id}">
@@ -537,7 +537,7 @@ function initializeMap() {
         
         const dataSourceBadge = isRealData ? 
             '<div style="background: #4AF450; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin: 0.5rem 0;">🌍 Real OpenStreetMap Data</div>' : 
-            '<div style="background: #9A8B95; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin: 0.5rem 0;">📋 Sample Data</div>';
+            '<div style="background: #9A8B95; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin: 0.5rem 0;">🍁 Ontario Data</div>';
         
         marker.bindPopup(`
             <div style="text-align: center; min-width: 200px;">
@@ -573,7 +573,7 @@ function initializeMap() {
 }
 
 function showStudioDetails(studioId) {
-    // Look in current search results first, then fallback to sample data
+    // Look in current search results first, then fallback to Ontario data
     let studio = currentStudios.find(s => s.id === studioId);
     if (!studio) {
         studio = pilatesStudios.find(s => s.id === studioId);
@@ -991,7 +991,7 @@ function simulateNearbySearch(request, callback) {
 function simulateGetDetails(request, callback) {
     setTimeout(() => {
         const details = {
-            name: 'Sample Studio',
+            name: 'Test Studio',
             formatted_address: '123 Main St, City, State',
             rating: 4.5,
             user_ratings_total: 89
@@ -1010,7 +1010,7 @@ function simulateGeocode(request, callback) {
     });
 }
 
-// Add some sample zip codes for testing
+    // Add some Ontario postal codes for testing
 window.testZipCodes = {
     'New York': ['10001', '10002', '10003'],
     'Los Angeles': ['90210', '90211', '90212'],
