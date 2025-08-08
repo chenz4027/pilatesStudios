@@ -72,31 +72,43 @@ const cityCenters = {
 const createSearchableCities = () => {
     const cities = [];
     
-    // Add major cities data
-    Object.keys(majorCitiesData).forEach(cityKey => {
-        const studioCount = majorCitiesData[cityKey].length;
-        cities.push({
-            name: cityKey,
-            displayName: cityKey.charAt(0).toUpperCase() + cityKey.slice(1),
-            country: getCityCountry(cityKey),
-            studioCount: studioCount,
-            type: 'major'
-        });
-    });
-    
-    // Add Ontario cities
-    const ontarioCities = ['Toronto', 'Ottawa', 'Mississauga', 'Hamilton', 'London', 'Kitchener', 'Windsor', 'Sudbury'];
-    ontarioCities.forEach(city => {
-        if (!cities.find(c => c.name.toLowerCase() === city.toLowerCase())) {
-            cities.push({
-                name: city.toLowerCase(),
-                displayName: city,
-                country: 'Canada',
-                studioCount: pilatesStudios.filter(s => s.address.includes(city)).length,
-                type: 'ontario'
+    try {
+        // Add major cities data
+        if (majorCitiesData && typeof majorCitiesData === 'object') {
+            Object.keys(majorCitiesData).forEach(cityKey => {
+                const studioCount = majorCitiesData[cityKey] ? majorCitiesData[cityKey].length : 0;
+                cities.push({
+                    name: cityKey,
+                    displayName: cityKey.charAt(0).toUpperCase() + cityKey.slice(1),
+                    country: getCityCountry(cityKey),
+                    studioCount: studioCount,
+                    type: 'major'
+                });
             });
         }
-    });
+    } catch (error) {
+        console.error('Error loading major cities data:', error);
+    }
+    
+    // Add Ontario cities
+    try {
+        const ontarioCities = ['Toronto', 'Ottawa', 'Mississauga', 'Hamilton', 'London', 'Kitchener', 'Windsor', 'Sudbury'];
+        if (pilatesStudios && Array.isArray(pilatesStudios)) {
+            ontarioCities.forEach(city => {
+                if (!cities.find(c => c.name.toLowerCase() === city.toLowerCase())) {
+                    cities.push({
+                        name: city.toLowerCase(),
+                        displayName: city,
+                        country: 'Canada',
+                        studioCount: pilatesStudios.filter(s => s.address && s.address.includes(city)).length,
+                        type: 'ontario'
+                    });
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error loading Ontario cities data:', error);
+    }
     
     // Sort by studio count (descending) then alphabetically
     return cities.sort((a, b) => {
@@ -122,7 +134,7 @@ const getCityCountry = (cityKey) => {
     return countryMap[cityKey] || 'Global';
 };
 
-const searchableCities = createSearchableCities();
+let searchableCities = [];
 
 // Real Ontario Pilates Studios Data - Sourced from web research January 2025
 const pilatesStudios = [
@@ -605,6 +617,12 @@ function initializeAutocomplete() {
 function showAutocomplete(query) {
     const dropdown = document.getElementById('autocompleteDropdown');
     
+    // Safety check
+    if (!searchableCities || !Array.isArray(searchableCities) || searchableCities.length === 0) {
+        hideAutocomplete();
+        return;
+    }
+    
     // Filter cities based on query
     const matches = searchableCities.filter(city => {
         return city.displayName.toLowerCase().includes(query) ||
@@ -663,6 +681,11 @@ function selectCity(cityName) {
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 App starting...');
+    
+    // Create searchable cities after all data is loaded
+    searchableCities = createSearchableCities();
+    console.log('📍 Created searchable cities:', searchableCities.length);
+    
     initializeApp();
     loadFeaturedStudios();
     setupEventListeners();
