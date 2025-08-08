@@ -83,6 +83,64 @@ const globalCitiesData = {
     'melbourne': [
         { id: 'mel1', name: 'Collins Street Pilates', address: '101 Collins St, Melbourne VIC 3000, Australia', lat: -37.8155, lng: 144.9648, rating: '4.3', reviews: 380, phone: '+61 3 9650 7777', website: 'https://collins-pilates.com.au', description: 'Central Melbourne studio in the heart of the business district.', amenities: ['CBD Location', 'Business District', 'Professional Focus'], image: '🏢', distance: '0.4 miles', source: 'Curated' },
         { id: 'mel2', name: 'St Kilda Beachside Studio', address: '15 Jacka Blvd, St Kilda VIC 3182, Australia', lat: -37.8673, lng: 144.9778, rating: '4.1', reviews: 290, phone: '+61 3 9534 8888', website: 'https://stkilda-pilates.com', description: 'Relaxed beachside studio in trendy St Kilda.', amenities: ['Beach Location', 'Trendy Area', 'Relaxed Vibe'], image: '🎪', distance: '0.9 miles', source: 'Curated' }
+    ],
+    
+    // ADDITIONAL EUROPEAN CITIES
+    'amsterdam': [
+        { id: 'ams1', name: 'Canal District Pilates', address: 'Prinsengracht 250, 1016 HH Amsterdam, Netherlands', lat: 52.3676, lng: 4.8851, rating: '4.4', reviews: 320, phone: '+31 20 625 8888', website: 'https://canal-pilates.nl', description: 'Charming studio overlooking historic Amsterdam canals.', amenities: ['Canal Views', 'Historic Setting', 'Multilingual'], image: '🚲', distance: '0.3 miles', source: 'Curated' },
+        { id: 'ams2', name: 'Vondelpark Wellness', address: 'Vondelstraat 120, 1054 GT Amsterdam, Netherlands', lat: 52.3584, lng: 4.8697, rating: '4.2', reviews: 280, phone: '+31 20 618 9999', website: 'https://vondelpark-wellness.com', description: 'Peaceful studio near beautiful Vondelpark.', amenities: ['Park Location', 'Peaceful Setting', 'Eco-Friendly'], image: '🌳', distance: '0.7 miles', source: 'Curated' }
+    ],
+    
+    'barcelona': [
+        { id: 'bcn1', name: 'Gothic Quarter Pilates', address: 'Carrer de la Portaferrissa, 23, 08002 Barcelona, Spain', lat: 41.3825, lng: 2.1740, rating: '4.3', reviews: 350, phone: '+34 93 318 8888', website: 'https://gothic-pilates.es', description: 'Historic studio in medieval Gothic Quarter with modern equipment.', amenities: ['Historic Quarter', 'Modern Equipment', 'Cultural Setting'], image: '🏰', distance: '0.4 miles', source: 'Curated' },
+        { id: 'bcn2', name: 'Barceloneta Beach Studio', address: 'Passeig Marítim, 32, 08003 Barcelona, Spain', lat: 41.3755, lng: 2.1864, rating: '4.1', reviews: 290, phone: '+34 93 221 9999', website: 'https://barceloneta-pilates.com', description: 'Beachfront studio with Mediterranean Sea views.', amenities: ['Sea Views', 'Beach Location', 'Outdoor Terrace'], image: '🏖️', distance: '0.8 miles', source: 'Curated' }
+    ],
+    
+    'munich': [
+        { id: 'mun1', name: 'Marienplatz Pilates', address: 'Marienplatz 8, 80331 München, Germany', lat: 48.1372, lng: 11.5755, rating: '4.2', reviews: 310, phone: '+49 89 2420 7777', website: 'https://marienplatz-pilates.de', description: 'Central studio overlooking famous Marienplatz town square.', amenities: ['City Center', 'Historic Views', 'Traditional Bavarian'], image: '🍺', distance: '0.2 miles', source: 'Curated' },
+        { id: 'mun2', name: 'English Garden Wellness', address: 'Leopoldstr. 58, 80802 München, Germany', lat: 48.1549, lng: 11.5911, rating: '4.0', reviews: 260, phone: '+49 89 3809 8888', website: 'https://englishgarden-wellness.de', description: 'Tranquil studio near the expansive English Garden park.', amenities: ['Park Views', 'Tranquil Setting', 'Natural Light'], image: '🌲', distance: '0.9 miles', source: 'Curated' }
+    ],
+    
+    'milan': [
+        { id: 'mil1', name: 'Duomo Pilates Studio', address: 'Via Torino, 51, 20123 Milano, Italy', lat: 45.4654, lng: 9.1859, rating: '4.4', reviews: 380, phone: '+39 02 8645 7777', website: 'https://duomo-pilates.it', description: 'Elegant studio near iconic Duomo cathedral in fashion capital.', amenities: ['Fashion District', 'Cathedral Views', 'Designer Setting'], image: '👗', distance: '0.3 miles', source: 'Curated' },
+        { id: 'mil2', name: 'Navigli Canal Fitness', address: 'Via Ascanio Sforza, 81, 20141 Milano, Italy', lat: 45.4408, lng: 9.1732, rating: '4.2', reviews: 320, phone: '+39 02 5831 8888', website: 'https://navigli-fitness.com', description: 'Trendy studio in vibrant Navigli nightlife district.', amenities: ['Nightlife Area', 'Trendy Location', 'Canal Views'], image: '🍷', distance: '0.7 miles', source: 'Curated' }
+    ],
+    
+    'vienna': [
+        { id: 'vie1', name: 'Schönbrunn Pilates', address: 'Mariahilfer Str. 127, 1060 Wien, Austria', lat: 48.2006, lng: 16.3528, rating: '4.3', reviews: 290, phone: '+43 1 585 9999', website: 'https://schoenbrunn-pilates.at', description: 'Imperial city studio near magnificent Schönbrunn Palace.', amenities: ['Palace Views', 'Imperial Setting', 'Classical Music'], image: '🎼', distance: '0.5 miles', source: 'Curated' },
+        { id: 'vie2', name: 'Danube River Wellness', address: 'Donaukanal, 1010 Wien, Austria', lat: 48.2116, lng: 16.3736, rating: '4.1', reviews: 250, phone: '+43 1 512 7777', website: 'https://danube-wellness.at', description: 'Riverside studio with Danube canal views in historic center.', amenities: ['River Views', 'Historic Center', 'Peaceful Setting'], image: '🌊', distance: '0.8 miles', source: 'Curated' }
+    ],
+    
+    // ADDITIONAL ASIAN CITIES
+    'seoul': [
+        { id: 'seo1', name: 'Gangnam Style Pilates', address: '429 Gangnam-daero, Seocho-gu, Seoul, South Korea', lat: 37.4979, lng: 127.0276, rating: '4.5', reviews: 450, phone: '+82 2-3445-8888', website: 'https://gangnam-pilates.kr', description: 'Upscale studio in trendy Gangnam district with K-pop energy.', amenities: ['Gangnam District', 'K-pop Culture', 'Luxury Amenities'], image: '🎤', distance: '0.4 miles', source: 'Curated' },
+        { id: 'seo2', name: 'Hongdae Youth Studio', address: '162 Yanghwa-ro, Mapo-gu, Seoul, South Korea', lat: 37.5563, lng: 126.9236, rating: '4.2', reviews: 340, phone: '+82 2-325-9999', website: 'https://hongdae-pilates.com', description: 'Energetic studio in university district popular with young Koreans.', amenities: ['University Area', 'Youth Culture', 'Dynamic Classes'], image: '🎓', distance: '0.7 miles', source: 'Curated' }
+    ],
+    
+    'bangkok': [
+        { id: 'bkk1', name: 'Sukhumvit Pilates Center', address: '888 Sukhumvit Rd, Khlong Toei, Bangkok 10110, Thailand', lat: 13.7307, lng: 100.5418, rating: '4.3', reviews: 380, phone: '+66 2-204-8888', website: 'https://sukhumvit-pilates.th', description: 'Modern studio on famous Sukhumvit Road in expat-friendly area.', amenities: ['Expat Friendly', 'Modern Facilities', 'Air Conditioned'], image: '🛺', distance: '0.5 miles', source: 'Curated' },
+        { id: 'bkk2', name: 'Chao Phraya River Studio', address: 'Charoenkrung Rd, Bang Rak, Bangkok 10500, Thailand', lat: 13.7200, lng: 100.5135, rating: '4.1', reviews: 290, phone: '+66 2-630-9999', website: 'https://chaophraya-wellness.com', description: 'Riverside studio with traditional Thai wellness approach.', amenities: ['River Views', 'Thai Wellness', 'Traditional Methods'], image: '🛶', distance: '0.9 miles', source: 'Curated' }
+    ],
+    
+    'osaka': [
+        { id: 'osa1', name: 'Osaka Castle Pilates', address: '1-1 Osakajo, Chuo Ward, Osaka, 540-0002, Japan', lat: 34.6873, lng: 135.5262, rating: '4.4', reviews: 350, phone: '+81 6-6941-7777', website: 'https://osakacastle-pilates.jp', description: 'Historic setting studio near famous Osaka Castle with traditional Japanese approach.', amenities: ['Castle Views', 'Traditional Japanese', 'Historic Setting'], image: '🏯', distance: '0.3 miles', source: 'Curated' },
+        { id: 'osa2', name: 'Dotonbori Fitness Plaza', address: '1-7-21 Dotonbori, Chuo Ward, Osaka, 542-0071, Japan', lat: 34.6686, lng: 135.5023, rating: '4.2', reviews: 310, phone: '+81 6-6213-8888', website: 'https://dotonbori-fitness.com', description: 'Vibrant studio in famous entertainment district known for food and nightlife.', amenities: ['Entertainment District', 'Vibrant Atmosphere', 'Food Culture'], image: '🍜', distance: '0.6 miles', source: 'Curated' }
+    ],
+    
+    // ADDITIONAL AMERICAN CITIES  
+    'las vegas': [
+        { id: 'lv1', name: 'Strip Pilates Luxury', address: '3730 S Las Vegas Blvd, Las Vegas, NV 89158, USA', lat: 36.1147, lng: -115.1728, rating: '4.3', reviews: 420, phone: '(702) 891-8888', website: 'https://strip-pilates.com', description: 'High-end studio on the famous Las Vegas Strip with celebrity trainers.', amenities: ['Strip Location', 'Celebrity Trainers', 'Luxury Amenities'], image: '🎰', distance: '0.2 miles', source: 'Curated' },
+        { id: 'lv2', name: 'Desert Oasis Wellness', address: '1700 W Charleston Blvd, Las Vegas, NV 89102, USA', lat: 36.1590, lng: -115.1782, rating: '4.1', reviews: 290, phone: '(702) 384-9999', website: 'https://desertoasis-wellness.com', description: 'Peaceful retreat-style studio away from the casino atmosphere.', amenities: ['Peaceful Setting', 'Retreat Style', 'Desert Views'], image: '🌵', distance: '0.8 miles', source: 'Curated' }
+    ],
+    
+    'washington': [
+        { id: 'dc1', name: 'Capitol Hill Pilates', address: '1200 Pennsylvania Ave NW, Washington, DC 20004, USA', lat: 38.8951, lng: -77.0364, rating: '4.4', reviews: 380, phone: '(202) 737-8888', website: 'https://capitolhill-pilates.com', description: 'Professional studio near the Capitol building serving government workers.', amenities: ['Capitol Views', 'Professional Focus', 'Government District'], image: '🏛️', distance: '0.3 miles', source: 'Curated' },
+        { id: 'dc2', name: 'Georgetown Wellness Center', address: '3222 M St NW, Georgetown, Washington, DC 20007, USA', lat: 38.9051, lng: -77.0618, rating: '4.2', reviews: 320, phone: '(202) 965-9999', website: 'https://georgetown-wellness.com', description: 'Upscale studio in historic Georgetown with Potomac River views.', amenities: ['Historic Georgetown', 'River Views', 'Upscale Setting'], image: '🏛️', distance: '0.7 miles', source: 'Curated' }
+    ],
+    
+    'montreal': [
+        { id: 'mtl1', name: 'Old Montreal Pilates', address: '150 Rue Saint-Paul Ouest, Montréal, QC H2Y 1Z5, Canada', lat: 45.5031, lng: -73.5550, rating: '4.3', reviews: 340, phone: '(514) 284-8888', website: 'https://oldmontreal-pilates.ca', description: 'Charming studio in historic Old Montreal with European atmosphere.', amenities: ['Historic Setting', 'European Feel', 'Bilingual Classes'], image: '🍁', distance: '0.4 miles', source: 'Curated' },
+        { id: 'mtl2', name: 'Mount Royal Fitness', address: '1240 Rue Drummond, Montréal, QC H3G 1V7, Canada', lat: 45.5017, lng: -73.5673, rating: '4.1', reviews: 280, phone: '(514) 861-9999', website: 'https://mountroyal-fitness.com', description: 'Modern studio near Mount Royal park with city skyline views.', amenities: ['Mountain Views', 'City Skyline', 'Modern Facilities'], image: '⛰️', distance: '0.8 miles', source: 'Curated' }
     ]
 };
 
@@ -117,7 +175,21 @@ const globalCityAliases = {
     'sydney australia': 'sydney',
     'melbourne australia': 'melbourne',
     'berlin germany': 'berlin',
-    'madrid spain': 'madrid'
+    'madrid spain': 'madrid',
+    'amsterdam netherlands': 'amsterdam',
+    'barcelona spain': 'barcelona', 
+    'bcn': 'barcelona',
+    'munich germany': 'munich',
+    'milan italy': 'milan',
+    'vienna austria': 'vienna',
+    'seoul south korea': 'seoul',
+    'bangkok thailand': 'bangkok',
+    'osaka japan': 'osaka',
+    'las vegas nevada': 'las vegas',
+    'vegas': 'las vegas',
+    'washington dc': 'washington',
+    'dc': 'washington',
+    'montreal canada': 'montreal'
 };
 
 // City center coordinates for global cities
@@ -142,7 +214,18 @@ const globalCityCenters = {
     'sydney': { lat: -33.8688, lng: 151.2093 },
     'melbourne': { lat: -37.8136, lng: 144.9631 },
     'toronto': { lat: 43.6532, lng: -79.3832 },
-    'vancouver': { lat: 49.2827, lng: -123.1207 }
+    'vancouver': { lat: 49.2827, lng: -123.1207 },
+    'amsterdam': { lat: 52.3676, lng: 4.9041 },
+    'barcelona': { lat: 41.3851, lng: 2.1734 },
+    'munich': { lat: 48.1351, lng: 11.5820 },
+    'milan': { lat: 45.4642, lng: 9.1900 },
+    'vienna': { lat: 48.2082, lng: 16.3738 },
+    'seoul': { lat: 37.5665, lng: 126.9780 },
+    'bangkok': { lat: 13.7563, lng: 100.5018 },
+    'osaka': { lat: 34.6937, lng: 135.5023 },
+    'las vegas': { lat: 36.1699, lng: -115.1398 },
+    'washington': { lat: 38.9072, lng: -77.0369 },
+    'montreal': { lat: 45.5017, lng: -73.5673 }
 };
 
 // Export for use in main script
