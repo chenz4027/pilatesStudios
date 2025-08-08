@@ -92,7 +92,7 @@ const pilatesStudios = [
         website: "https://www.pilatesessentials.ca",
         description: "Fully equipped STOTT® Pilates studio with V2 Max™ Reformers and professional equipment. 25+ years in the fitness industry.",
         amenities: ["STOTT Equipment", "V2 Max Reformers", "25+ Years Experience", "Private & Semi-Private"],
-        image: "🌊",
+        image: "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
         zipCodes: ["N8T", "N9A", "N9B", "N8S", "N8X"]
     },
     {
