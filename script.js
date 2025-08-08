@@ -333,10 +333,13 @@ function displaySearchResults(studios, searchTerm) {
     // Generate studio cards
     studioList.innerHTML = studios.map(studio => createStudioCard(studio)).join('');
     
+    // Update currentStudios so map can access the data
+    currentStudios = studios;
+    
     // Add click listeners to studio cards
     document.querySelectorAll('.studio-card').forEach(card => {
         card.addEventListener('click', function() {
-            const studioId = parseInt(this.dataset.studioId);
+            const studioId = this.dataset.studioId;
             showStudioDetails(studioId);
         });
     });
@@ -348,6 +351,11 @@ function displaySearchResults(studios, searchTerm) {
 function createStudioCard(studio) {
     const stars = '★'.repeat(Math.floor(studio.rating)) + '☆'.repeat(5 - Math.floor(studio.rating));
     const distanceText = studio.distance ? `${studio.distance.toFixed(1)} miles away` : '';
+    const isRealData = studio.source === 'OpenStreetMap';
+    
+    const dataSourceBadge = isRealData ? 
+        '<span class="tag" style="background: #4AF450; color: white;">🌍 Real Data</span>' : 
+        '<span class="tag" style="background: #9A8B95; color: white;">📋 Sample</span>';
     
     return `
         <div class="studio-card" data-studio-id="${studio.id}">
@@ -363,8 +371,9 @@ function createStudioCard(studio) {
                 </div>
             </div>
             <div class="studio-tags">
-                ${studio.amenities.slice(0, 3).map(amenity => `<span class="tag">${amenity}</span>`).join('')}
-                ${studio.amenities.length > 3 ? `<span class="tag">+${studio.amenities.length - 3} more</span>` : ''}
+                ${dataSourceBadge}
+                ${studio.amenities.slice(0, 2).map(amenity => `<span class="tag">${amenity}</span>`).join('')}
+                ${studio.amenities.length > 2 ? `<span class="tag">+${studio.amenities.length - 2} more</span>` : ''}
             </div>
         </div>
     `;
@@ -411,6 +420,10 @@ function toggleView(viewType) {
 }
 
 function initializeMap() {
+    console.log('🗺️ Initializing map...');
+    console.log('📍 Current studios:', currentStudios.length);
+    console.log('📍 User location:', userLocation);
+    
     if (map) {
         map.remove();
     }
@@ -423,12 +436,15 @@ function initializeMap() {
     if (currentStudios.length > 0) {
         if (userLocation) {
             center = [userLocation.lat, userLocation.lng];
+            console.log('🎯 Centering on user location:', center);
         } else {
             center = [currentStudios[0].lat, currentStudios[0].lng];
+            console.log('🎯 Centering on first studio:', center);
         }
         zoom = currentStudios.length === 1 ? 15 : 12;
     }
     
+    console.log('🗺️ Creating map at center:', center, 'zoom:', zoom);
     map = L.map('mapContainer').setView(center, zoom);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -439,15 +455,35 @@ function initializeMap() {
     const studiesToShow = currentStudios.length > 0 ? currentStudios : pilatesStudios.slice(0, 10);
     
     studiesToShow.forEach(studio => {
-        const marker = L.marker([studio.lat, studio.lng]).addTo(map);
+        // Create different icons for real vs simulated data
+        const isRealData = studio.source === 'OpenStreetMap';
+        const icon = isRealData ? 
+            L.icon({
+                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM0QUY0NTAiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            }) : 
+            L.icon({
+                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiIGZpbGw9IiM5QThCOTUiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0id2hpdGUiLz4KPC9zdmc+',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+        
+        const marker = L.marker([studio.lat, studio.lng], { icon }).addTo(map);
+        
+        const dataSourceBadge = isRealData ? 
+            '<div style="background: #4AF450; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin: 0.5rem 0;">🌍 Real OpenStreetMap Data</div>' : 
+            '<div style="background: #9A8B95; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin: 0.5rem 0;">📋 Sample Data</div>';
+        
         marker.bindPopup(`
             <div style="text-align: center; min-width: 200px;">
                 <h4 style="margin: 0 0 0.5rem 0; color: #333;">${studio.name}</h4>
                 <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.9rem;">${studio.address}</p>
+                ${dataSourceBadge}
                 <div style="margin: 0.5rem 0;">
                     <span style="color: #ffd700;">★</span> ${studio.rating} (${studio.reviews} reviews)
                 </div>
-                <button onclick="showStudioDetails(${studio.id})" style="
+                <button onclick="showStudioDetails('${studio.id}')" style="
                     background: #9A8B95; 
                     color: #F4F1F4; 
                     border: none; 
@@ -473,7 +509,11 @@ function initializeMap() {
 }
 
 function showStudioDetails(studioId) {
-    const studio = pilatesStudios.find(s => s.id === studioId);
+    // Look in current search results first, then fallback to sample data
+    let studio = currentStudios.find(s => s.id === studioId);
+    if (!studio) {
+        studio = pilatesStudios.find(s => s.id === studioId);
+    }
     if (!studio) return;
     
     const modal = document.getElementById('studioModal');
@@ -632,13 +672,16 @@ function geocodeLocationSimulated(query) {
 }
 
 async function searchNearbyPilatesStudios(location) {
+    console.log('🔍 Searching for studios near:', location);
+    
     if (!USE_FREE_APIS) {
-        // Fallback to simulation
+        console.log('📋 Using simulated data (free APIs disabled)');
         return searchNearbyPilatesStudiosSimulated(location);
     }
     
     try {
         const radius = document.getElementById('radiusSelect').value;
+        console.log('📏 Search radius:', radius + 'm');
         
         // Use Overpass API to find real fitness/sport facilities
         const overpassQuery = `
@@ -654,6 +697,7 @@ async function searchNearbyPilatesStudios(location) {
             out center meta;
         `;
         
+        console.log('🌐 Calling Overpass API...');
         const response = await fetch(OVERPASS_BASE_URL, {
             method: 'POST',
             headers: {
@@ -663,8 +707,11 @@ async function searchNearbyPilatesStudios(location) {
         });
         
         const data = await response.json();
+        console.log('📊 Overpass API response:', data);
         
         if (data && data.elements && data.elements.length > 0) {
+            console.log('✅ Found', data.elements.length, 'real fitness facilities');
+            
             // Convert real data to our studio format
             const realStudios = data.elements
                 .filter(element => element.lat && element.lon)
@@ -691,15 +738,19 @@ async function searchNearbyPilatesStudios(location) {
             realStudios.sort((a, b) => a.distance - b.distance);
             
             if (realStudios.length > 0) {
+                console.log('🎯 Returning', realStudios.length, 'real studios');
                 return realStudios;
             }
+        } else {
+            console.log('❌ No real data found, using simulated data');
         }
         
         // Fallback to generated data if no real data found
         return searchNearbyPilatesStudiosSimulated(location);
         
     } catch (error) {
-        console.error('Real data search error:', error);
+        console.error('❌ Real data search error:', error);
+        console.log('📋 Falling back to simulated data');
         // Fallback to simulation on error
         return searchNearbyPilatesStudiosSimulated(location);
     }
