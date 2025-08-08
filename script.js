@@ -11,140 +11,152 @@ const USE_FREE_APIS = true; // Set to true to use free OpenStreetMap + Nominatim
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 const OVERPASS_BASE_URL = 'https://overpass-api.de/api/interpreter';
 
-// Sample Pilates studios data (in a real app, this would come from a database/API)
+// Ontario Pilates Studios Data - Default map shows all Ontario locations
 const pilatesStudios = [
     {
         id: 1,
-        name: "Core Power Pilates Studio",
-        address: "123 Main St, New York, NY 10001",
-        lat: 40.7589,
-        lng: -73.9851,
+        name: "Toronto Core Pilates",
+        address: "123 King Street West, Toronto, ON M5H 1A1",
+        lat: 43.6462,
+        lng: -79.3937,
         rating: 4.8,
         reviews: 127,
-        phone: "(555) 123-4567",
-        website: "www.corepowerpilates.com",
-        description: "A premier Pilates studio offering reformer classes, mat work, and specialized training. Our certified instructors provide personalized attention in a serene environment.",
-        amenities: ["Reformer Classes", "Mat Pilates", "Private Sessions", "Beginner Friendly"],
-        image: "🏢",
-        zipCodes: ["10001", "10002", "10003", "10004", "10005"]
+        phone: "(416) 123-4567",
+        website: "www.torontocorepilates.com",
+        description: "Downtown Toronto's premier Pilates studio with state-of-the-art equipment and certified instructors. Located in the financial district.",
+        amenities: ["Reformer Classes", "Mat Pilates", "Private Sessions", "Corporate Programs"],
+        image: "🏙️",
+        zipCodes: ["M5H", "M5G", "M5C", "M5E", "M5J"]
     },
     {
         id: 2,
-        name: "Zen Pilates & Wellness",
-        address: "456 Oak Ave, Los Angeles, CA 90210",
-        lat: 34.0522,
-        lng: -118.2437,
-        rating: 4.9,
+        name: "Ottawa Wellness Studio",
+        address: "456 Sparks Street, Ottawa, ON K1P 5B7",
+        lat: 45.4215,
+        lng: -75.6993,
+        rating: 4.6,
         reviews: 89,
-        phone: "(555) 987-6543",
-        website: "www.zenpilates.com",
-        description: "Holistic approach to Pilates combining traditional methods with modern wellness practices. Offering group classes and one-on-one sessions.",
-        amenities: ["Classical Pilates", "Wellness Programs", "Meditation", "Nutrition Counseling"],
-        image: "🧘‍♀️",
-        zipCodes: ["90210", "90211", "90212", "90213", "90214"]
+        phone: "(613) 234-5678",
+        website: "www.ottawawellness.com",
+        description: "Capital city's favorite Pilates destination offering both classical and contemporary methods near Parliament Hill.",
+        amenities: ["Classical Pilates", "Contemporary Methods", "Government District", "Lunch Classes"],
+        image: "🏛️",
+        zipCodes: ["K1P", "K1R", "K1S", "K1N", "K1G"]
     },
     {
         id: 3,
-        name: "Studio Equilibrium",
-        address: "789 Pine Rd, Chicago, IL 60601",
-        lat: 41.8781,
-        lng: -87.6298,
+        name: "Hamilton Harmony Pilates",
+        address: "789 James Street North, Hamilton, ON L8L 1J9",
+        lat: 43.2557,
+        lng: -79.8711,
         rating: 4.7,
         reviews: 156,
-        phone: "(555) 456-7890",
-        website: "www.studioequilibrium.com",
-        description: "Modern Pilates studio focusing on alignment, strength, and flexibility. Features state-of-the-art equipment and expert instruction.",
-        amenities: ["Tower Classes", "Barre Fusion", "Rehab Pilates", "Advanced Training"],
-        image: "⚖️",
-        zipCodes: ["60601", "60602", "60603", "60604", "60605"]
+        phone: "(905) 345-6789",
+        website: "www.hamiltonharmony.com",
+        description: "Welcoming studio in Hamilton's vibrant arts district, perfect for beginners and advanced practitioners alike.",
+        amenities: ["Beginner Friendly", "Arts District", "Community Classes", "Creative Environment"],
+        image: "🎨",
+        zipCodes: ["L8L", "L8R", "L8S", "L8N", "L8P"]
     },
     {
         id: 4,
-        name: "Flow Pilates London",
-        address: "12 Regent Street, London W1B 5SA, UK",
-        lat: 51.5074,
-        lng: -0.1278,
-        rating: 4.6,
-        reviews: 203,
-        phone: "+44 20 7123 4567",
-        website: "www.flowpilateslondon.co.uk",
-        description: "London's premier Pilates destination offering dynamic classes in the heart of the city. Combining traditional Pilates with contemporary techniques.",
-        amenities: ["Dynamic Reformer", "Mat Classes", "Prenatal Pilates", "Corporate Programs"],
-        image: "🇬🇧",
-        zipCodes: ["W1B", "W1C", "W1D", "W1F", "W1G"]
+        name: "London Movement Studio",
+        address: "321 Richmond Street, London, ON N6A 3C4",
+        lat: 42.9849,
+        lng: -81.2453,
+        rating: 4.5,
+        reviews: 94,
+        phone: "(519) 456-7890",
+        website: "www.londonmovement.com",
+        description: "Forest City's modern Pilates studio focusing on functional movement and rehabilitation near Western University.",
+        amenities: ["Physiotherapy Integration", "Functional Movement", "Rehabilitation", "Student Discounts"],
+        image: "🌳",
+        zipCodes: ["N6A", "N6B", "N6C", "N6G", "N6H"]
     },
     {
         id: 5,
-        name: "Pilates Plus Sydney",
-        address: "88 George Street, Sydney NSW 2000, Australia",
-        lat: -33.8688,
-        lng: 151.2093,
-        rating: 4.8,
-        reviews: 174,
-        phone: "+61 2 9876 5432",
-        website: "www.pilatesplussydney.com.au",
-        description: "Sydney's leading Pilates studio with harbor views. Offering comprehensive programs for all fitness levels in a stunning waterfront location.",
-        amenities: ["Harbor View Classes", "Aqua Pilates", "Outdoor Sessions", "Wellness Retreats"],
-        image: "🇦🇺",
-        zipCodes: ["2000", "2001", "2002", "2003", "2004"]
+        name: "Windsor Waterfront Pilates",
+        address: "654 Riverside Drive, Windsor, ON N9A 5K4",
+        lat: 42.3149,
+        lng: -83.0364,
+        rating: 4.9,
+        reviews: 78,
+        phone: "(519) 567-8901",
+        website: "www.windsorwaterfront.com",
+        description: "Stunning Detroit River views while you strengthen your core in this border city gem with unique international atmosphere.",
+        amenities: ["Waterfront Views", "Border City", "International Atmosphere", "River Views"],
+        image: "🌊",
+        zipCodes: ["N9A", "N9B", "N9C", "N8S", "N8T"]
     },
     {
         id: 6,
-        name: "Milano Pilates Center",
-        address: "Via Montenapoleone 10, 20121 Milano, Italy",
-        lat: 45.4642,
-        lng: 9.1900,
-        rating: 4.9,
-        reviews: 91,
-        phone: "+39 02 1234 5678",
-        website: "www.milanopilatescenter.it",
-        description: "Elegant Pilates studio in the fashion capital of Italy. Combining Italian style with precise Pilates methodology for a unique experience.",
-        amenities: ["Italian Method", "Fashion District Location", "Luxury Amenities", "Celebrity Training"],
-        image: "🇮🇹",
-        zipCodes: ["20121", "20122", "20123", "20124", "20125"]
+        name: "Kingston Limestone Pilates",
+        address: "987 Princess Street, Kingston, ON K7L 1H1",
+        lat: 44.2312,
+        lng: -76.4860,
+        rating: 4.6,
+        reviews: 112,
+        phone: "(613) 678-9012",
+        website: "www.kingstonlimestone.com",
+        description: "Historic limestone building housing a modern Pilates studio near Queen's University and the beautiful Kingston waterfront.",
+        amenities: ["Historic Building", "University Area", "Student Discounts", "Waterfront Proximity"],
+        image: "🏰",
+        zipCodes: ["K7L", "K7M", "K7N", "K7K", "K7P"]
     },
     {
         id: 7,
-        name: "Tokyo Core Studio",
-        address: "1-1-1 Shibuya, Tokyo 150-0002, Japan",
-        lat: 35.6762,
-        lng: 139.6503,
+        name: "Mississauga Mind-Body Studio",
+        address: "159 Lakeshore Road East, Mississauga, ON L5G 1E5",
+        lat: 43.5890,
+        lng: -79.5656,
         rating: 4.7,
-        reviews: 132,
-        phone: "+81 3 1234 5678",
-        website: "www.tokyocorestudio.jp",
-        description: "Modern Pilates studio in the heart of Tokyo, blending Japanese precision with Pilates principles. Offering bilingual instruction and zen atmosphere.",
-        amenities: ["Bilingual Classes", "Japanese Aesthetics", "Mind-Body Connection", "Tech Integration"],
-        image: "🇯🇵",
-        zipCodes: ["150-0002", "150-0001", "150-0011", "150-0012", "150-0013"]
+        reviews: 134,
+        phone: "(905) 789-0123",
+        website: "www.mississaugamindbody.com",
+        description: "Holistic Pilates approach in the heart of Mississauga with beautiful Lake Ontario proximity and meditation integration.",
+        amenities: ["Holistic Approach", "Lake Ontario Views", "Meditation Classes", "Mindfulness Integration"],
+        image: "🧘‍♀️",
+        zipCodes: ["L5G", "L5H", "L5J", "L5A", "L5B"]
     },
     {
         id: 8,
-        name: "São Paulo Pilates Academy",
-        address: "Rua Augusta 1500, São Paulo SP 01304-001, Brazil",
-        lat: -23.5505,
-        lng: -46.6333,
-        rating: 4.6,
-        reviews: 198,
-        phone: "+55 11 9876 5432",
-        website: "www.sppilatescademy.com.br",
-        description: "Brazil's premier Pilates academy offering comprehensive training and classes. Known for vibrant energy and innovative teaching methods.",
-        amenities: ["Brazilian Style", "Dance Fusion", "Beach Body Programs", "Carnival Prep"],
-        image: "🇧🇷",
-        zipCodes: ["01304-001", "01305-001", "01306-001", "01307-001", "01308-001"]
+        name: "Thunder Bay Northern Pilates",
+        address: "246 Red River Road, Thunder Bay, ON P7B 1A8",
+        lat: 48.3822,
+        lng: -89.2461,
+        rating: 4.4,
+        reviews: 67,
+        phone: "(807) 890-1234",
+        website: "www.thunderbaynorthern.com",
+        description: "Northern Ontario's premier Pilates destination with a focus on outdoor lifestyle integration and wilderness connection.",
+        amenities: ["Outdoor Integration", "Northern Ontario", "Wilderness Connection", "Seasonal Programs"],
+        image: "🏔️",
+        zipCodes: ["P7B", "P7C", "P7E", "P7A", "P7G"]
     }
 ];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 App starting...');
     initializeApp();
     loadFeaturedStudios();
     setupEventListeners();
     loadGoogleMapsAPI();
+    
+    // Test map immediately for debugging
+    setTimeout(() => {
+        console.log('🧪 Testing map initialization...');
+        testMapCreation();
+    }, 2000);
 });
 
 function initializeApp() {
-    console.log('Pilates Studio Finder initialized');
+    console.log('🍁 Pilates Studio Finder initialized for Ontario, Canada');
+    
+    // Load Ontario studios as default data
+    currentStudios = [...pilatesStudios]; // Show all Ontario studios by default
+    
+    console.log('📍 Loaded', currentStudios.length, 'Ontario studios by default');
 }
 
 // Load Google Maps API dynamically
@@ -400,22 +412,36 @@ function loadFeaturedStudios() {
 }
 
 function toggleView(viewType) {
+    console.log('🔄 Toggling view to:', viewType);
     const listView = document.getElementById('studioList');
     const mapView = document.getElementById('mapContainer');
     const listBtn = document.getElementById('listViewBtn');
     const mapBtn = document.getElementById('mapViewBtn');
+    
+    console.log('📦 Elements found:', {
+        listView: !!listView,
+        mapView: !!mapView,
+        listBtn: !!listBtn,
+        mapBtn: !!mapBtn
+    });
     
     if (viewType === 'list') {
         listView.style.display = 'block';
         mapView.style.display = 'none';
         listBtn.classList.add('active');
         mapBtn.classList.remove('active');
+        console.log('📋 Switched to list view');
     } else {
         listView.style.display = 'none';
         mapView.style.display = 'block';
         listBtn.classList.remove('active');
         mapBtn.classList.add('active');
-        initializeMap();
+        console.log('🗺️ Switched to map view, initializing map...');
+        
+        // Add a small delay to ensure container is visible
+        setTimeout(() => {
+            initializeMap();
+        }, 100);
     }
 }
 
@@ -428,28 +454,56 @@ function initializeMap() {
         map.remove();
     }
     
-    // Default center (New York)
-    let center = [40.7589, -73.9851];
-    let zoom = 10;
+    // Default center (Ontario, Canada - Toronto area)
+    let center = [43.8828, -79.0079]; // Ontario center coordinates
+    let zoom = 7; // Good zoom level to see all of Ontario
     
     // If we have search results, center on them
     if (currentStudios.length > 0) {
         if (userLocation) {
             center = [userLocation.lat, userLocation.lng];
             console.log('🎯 Centering on user location:', center);
+            zoom = 10; // Closer zoom for search results
         } else {
             center = [currentStudios[0].lat, currentStudios[0].lng];
             console.log('🎯 Centering on first studio:', center);
+            zoom = 10;
         }
-        zoom = currentStudios.length === 1 ? 15 : 12;
     }
     
     console.log('🗺️ Creating map at center:', center, 'zoom:', zoom);
-    map = L.map('mapContainer').setView(center, zoom);
     
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    // Check if Leaflet is available
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet library not available!');
+        return;
+    }
+    
+    // Check container
+    const container = document.getElementById('mapContainer');
+    if (!container) {
+        console.error('❌ Map container not found!');
+        return;
+    }
+    
+    console.log('📦 Container dimensions:', {
+        width: container.offsetWidth,
+        height: container.offsetHeight,
+        display: getComputedStyle(container).display
+    });
+    
+    try {
+        map = L.map('mapContainer').setView(center, zoom);
+        console.log('✅ Map object created');
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        console.log('✅ Tiles added to map');
+    } catch (error) {
+        console.error('❌ Error creating map:', error);
+        return;
+    }
     
     // Add markers for studios
     const studiesToShow = currentStudios.length > 0 ? currentStudios : pilatesStudios.slice(0, 10);
@@ -611,6 +665,41 @@ function showAbout() {
 
 function showContact() {
     alert('Contact: Visit https://chenz4027.github.io for more information or to get in touch with Maggie Chen.');
+}
+
+// Test function to check if map can be created
+function testMapCreation() {
+    console.log('🧪 Testing map creation...');
+    console.log('📚 Leaflet available?', typeof L !== 'undefined');
+    
+    if (typeof L === 'undefined') {
+        console.error('❌ Leaflet library not loaded!');
+        return;
+    }
+    
+    const mapContainer = document.getElementById('mapContainer');
+    console.log('📦 Map container found?', !!mapContainer);
+    console.log('📏 Map container dimensions:', {
+        width: mapContainer?.offsetWidth,
+        height: mapContainer?.offsetHeight,
+        display: mapContainer?.style.display
+    });
+    
+    // Try to create a simple test map
+    try {
+        if (mapContainer && mapContainer.offsetHeight > 0) {
+            console.log('✅ Creating test map...');
+            const testMap = L.map('mapContainer').setView([40.7589, -73.9851], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(testMap);
+            console.log('✅ Test map created successfully!');
+        } else {
+            console.log('⚠️ Map container not visible or has no height');
+        }
+    } catch (error) {
+        console.error('❌ Error creating test map:', error);
+    }
 }
 
 // Google Maps API integration functions
@@ -911,3 +1000,40 @@ window.testZipCodes = {
     'Tokyo': ['150-0002', '150-0001', '150-0011'],
     'São Paulo': ['01304-001', '01305-001', '01306-001']
 };
+
+// Add a simple test function for debugging
+function testMapDisplay() {
+    console.log('🧪 Testing map display...');
+    const mapContainer = document.getElementById('mapContainer');
+    const listContainer = document.getElementById('studioList');
+    
+    console.log('🔍 Container elements:');
+    console.log('- mapContainer exists:', !!mapContainer);
+    console.log('- listContainer exists:', !!listContainer);
+    
+    if (mapContainer) {
+        console.log('📦 mapContainer details:');
+        console.log('- offsetWidth:', mapContainer.offsetWidth);
+        console.log('- offsetHeight:', mapContainer.offsetHeight);
+        console.log('- display style:', mapContainer.style.display);
+        console.log('- computed display:', getComputedStyle(mapContainer).display);
+        console.log('- visibility:', getComputedStyle(mapContainer).visibility);
+        
+        // Force show the map container
+        mapContainer.style.display = 'block';
+        mapContainer.style.height = '500px';
+        mapContainer.style.backgroundColor = '#ff6b6b'; // Red background for testing
+        
+        console.log('🎨 Forced map container to be visible with red background');
+        console.log('- New offsetWidth:', mapContainer.offsetWidth);
+        console.log('- New offsetHeight:', mapContainer.offsetHeight);
+    }
+    
+    console.log('🌍 Leaflet availability:', typeof L !== 'undefined');
+    if (typeof L !== 'undefined') {
+        console.log('✅ Leaflet version:', L.version);
+    }
+}
+
+// Make test function available globally for console testing
+window.testMapDisplay = testMapDisplay;
