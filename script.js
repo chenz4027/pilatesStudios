@@ -18,8 +18,10 @@ const USE_FREE_APIS = true; // Set to true to use free OpenStreetMap + Nominatim
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 const OVERPASS_BASE_URL = 'https://overpass-api.de/api/interpreter';
 
-// Major cities data for quick search
+// Merge global cities data with existing major cities data
 const majorCitiesData = {
+    // Merge existing data with global data
+    ...globalCitiesData,
     'new york': [
         { id: 'ny1', name: 'Pure Yoga', address: '203 E 86th St, New York, NY 10028', lat: 40.7831, lng: -73.9527, rating: '4.2', reviews: 450, phone: '(212) 769-2200', website: 'https://pureyoga.com', description: 'Premium yoga and Pilates studio in the Upper East Side offering classes for all levels.', amenities: ['Mat Rental', 'Changing Rooms', 'Showers'], image: '🧘‍♀️', distance: '0.5 miles', source: 'Curated' },
         { id: 'ny2', name: 'SLT Studio', address: '25 E 73rd St, New York, NY 10021', lat: 40.7738, lng: -73.9668, rating: '4.4', reviews: 320, phone: '(212) 772-7005', website: 'https://sltmethod.com', description: 'High-intensity, low-impact Pilates-inspired workout using the Megaformer machine.', amenities: ['Equipment Provided', 'Towel Service', 'Water'], image: '💪', distance: '0.8 miles', source: 'Curated' },
@@ -52,23 +54,14 @@ const majorCitiesData = {
     ]
 };
 
-// City aliases for better search matching
+// City aliases for better search matching (merge global with existing)
 const cityAliases = {
-    'nyc': 'new york',
-    'manhattan': 'new york', 
-    'brooklyn': 'new york',
-    'la': 'los angeles',
-    'los angelas': 'los angeles', // Common misspelling
-    'l.a.': 'los angeles',
-    'chi-town': 'chicago',
-    'windy city': 'chicago'
+    ...globalCityAliases
 };
 
-// City center coordinates for map centering
+// City center coordinates for map centering (merge global with existing)
 const cityCenters = {
-    'new york': { lat: 40.7589, lng: -73.9851 }, // Times Square area
-    'los angeles': { lat: 34.0522, lng: -118.2437 }, // Downtown LA
-    'chicago': { lat: 41.8781, lng: -87.6298 } // Downtown Chicago
+    ...globalCityCenters
 };
 
 // Real Ontario Pilates Studios Data - Sourced from web research January 2025
