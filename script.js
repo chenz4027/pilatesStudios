@@ -18,6 +18,10 @@ const USE_FREE_APIS = true; // Set to true to use free OpenStreetMap + Nominatim
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 const OVERPASS_BASE_URL = 'https://overpass-api.de/api/interpreter';
 
+// Debug: Check if globalCitiesData is loaded
+console.log('🌍 Global cities data loaded:', typeof globalCitiesData !== 'undefined');
+console.log('🌍 Available global cities:', globalCitiesData ? Object.keys(globalCitiesData) : 'NOT LOADED');
+
 // Merge global cities data with existing major cities data
 const majorCitiesData = {
     // Merge existing data with global data
@@ -613,8 +617,13 @@ async function handleSearch() {
             }
         }
         
+        // Debug: Show what we're looking for
+        console.log('🔍 Target city after alias mapping:', targetCity);
+        console.log('🏙️ Available major cities:', Object.keys(majorCitiesData));
+        
         // Now check for the actual city data
         for (const [cityKey, cityStudios] of Object.entries(majorCitiesData)) {
+            console.log('🔄 Checking:', targetCity, 'vs', cityKey);
             if (targetCity.includes(cityKey) || cityKey.includes(targetCity)) {
                 console.log('⚡ Found curated data for', cityKey, '- showing', cityStudios.length, 'studios instantly!');
                 

@@ -6,20 +6,20 @@
 }
 
 :root {
-    --morandi-sage: #B8A8A8;
-    --morandi-clay: #D4B8C4;
-    --morandi-dust: #E0C4D0;
-    --morandi-stone: #A8A1A8;
-    --morandi-mist: #C8BCC8;
-    --morandi-cream: #F4F1F4;
-    --morandi-deep: #7A7175;
-    --morandi-accent: #9A8B95;
+    --morandi-sage: #B8C8D8;      /* Soft baby blue for primary actions */
+    --morandi-clay: #E8D4E0;      /* Gentle pink for highlights */
+    --morandi-dust: #F0E8F0;      /* Very light pink for backgrounds */
+    --morandi-stone: #A8B8C8;     /* Muted blue-gray for secondary text */
+    --morandi-mist: #D8C8D8;      /* Soft lavender-pink for subtle elements */
+    --morandi-cream: #F8F4F8;     /* Almost white with hint of pink */
+    --morandi-deep: #708090;      /* Deeper blue-gray for text */
+    --morandi-accent: #C8A8C8;    /* Muted pink accent */
 }
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    color: #4a4047;
+    color: var(--morandi-deep);
     background: linear-gradient(135deg, var(--morandi-sage) 0%, var(--morandi-clay) 50%, var(--morandi-dust) 100%);
     min-height: 100vh;
 }
