@@ -531,45 +531,96 @@ async function handleSearch() {
     }
 
     showLoading(true);
+    console.log('🔍 User searched for:', query);
     
     try {
-        // First, geocode the location
+        // FIRST: Search through our Ontario studios for immediate matches
+        const localMatches = searchStudios(query);
+        console.log('🍁 Found', localMatches.length, 'local Ontario matches for:', query);
+        
+        if (localMatches.length > 0) {
+            // If we found local matches, show them immediately
+            console.log('✅ Showing local Ontario studios');
+            displaySearchResults(localMatches, query);
+            showLoading(false);
+            return;
+        }
+        
+        // SECOND: If no local matches, try geocoding and API search
+        console.log('🌐 No local matches, trying geocoding and API search...');
         const location = await geocodeLocation(query);
         if (!location) {
-            throw new Error('Location not found');
+            // No location found anywhere
+            displaySearchResults([], query);
+            showLoading(false);
+            return;
         }
         
         userLocation = location;
         
-        // Search for Pilates studios near this location
+        // Search for studios near this location using APIs
         const studios = await searchNearbyPilatesStudios(location);
         displaySearchResults(studios, query);
     } catch (error) {
         console.error('Search error:', error);
-        alert('Error searching for studios. Please try again.');
+        // Show local studios as fallback
+        console.log('🆘 Error occurred, showing all Ontario studios as fallback');
+        displaySearchResults(pilatesStudios, query);
     } finally {
         showLoading(false);
     }
 }
 
 function searchStudios(query) {
-    // Simple search logic - in a real app, this would use geocoding APIs
-    const normalizedQuery = query.toLowerCase().replace(/\s+/g, '');
+    console.log('🔍 Searching Ontario studios for:', query);
+    const queryLower = query.toLowerCase().trim();
+    const normalizedQuery = queryLower.replace(/\s+/g, '');
     
-    return pilatesStudios.filter(studio => {
-        // Check zip codes
-        const zipMatch = studio.zipCodes.some(zip => 
-            zip.toLowerCase().replace(/\s+/g, '').includes(normalizedQuery)
+    const matches = pilatesStudios.filter(studio => {
+        // Check postal codes (Ontario format like M5H, L6J, N1H, P3E)
+        const postalMatch = studio.zipCodes.some(postal => 
+            postal.toLowerCase().includes(normalizedQuery) ||
+            postal.toLowerCase().replace(/\s+/g, '').includes(normalizedQuery)
         );
         
-        // Check address
-        const addressMatch = studio.address.toLowerCase().includes(query.toLowerCase());
+        // Check full address
+        const addressMatch = studio.address.toLowerCase().includes(queryLower);
         
-        // Check city names
-        const cityMatch = studio.address.toLowerCase().includes(query.toLowerCase());
+        // Check studio name
+        const nameMatch = studio.name.toLowerCase().includes(queryLower);
         
-        return zipMatch || addressMatch || cityMatch;
+        // Check specific Ontario cities (extract city from address)
+        const addressParts = studio.address.toLowerCase();
+        const cityMatch = (
+            (queryLower.includes('toronto') && addressParts.includes('toronto')) ||
+            (queryLower.includes('mississauga') && addressParts.includes('mississauga')) ||
+            (queryLower.includes('ottawa') && addressParts.includes('ottawa')) ||
+            (queryLower.includes('hamilton') && addressParts.includes('hamilton')) ||
+            (queryLower.includes('brampton') && addressParts.includes('brampton')) ||
+            (queryLower.includes('oakville') && addressParts.includes('oakville')) ||
+            (queryLower.includes('burlington') && addressParts.includes('burlington')) ||
+            (queryLower.includes('vaughan') && addressParts.includes('vaughan')) ||
+            (queryLower.includes('markham') && addressParts.includes('markham')) ||
+            (queryLower.includes('kitchener') && addressParts.includes('kitchener')) ||
+            (queryLower.includes('waterloo') && addressParts.includes('waterloo')) ||
+            (queryLower.includes('cambridge') && addressParts.includes('cambridge')) ||
+            (queryLower.includes('guelph') && addressParts.includes('guelph')) ||
+            (queryLower.includes('barrie') && addressParts.includes('barrie')) ||
+            (queryLower.includes('windsor') && addressParts.includes('windsor')) ||
+            (queryLower.includes('sudbury') && addressParts.includes('sudbury')) ||
+            (queryLower.includes('north york') && addressParts.includes('north york'))
+        );
+        
+        const isMatch = postalMatch || addressMatch || nameMatch || cityMatch;
+        if (isMatch) {
+            console.log('✅ Match found:', studio.name, 'in', studio.address);
+        }
+        
+        return isMatch;
     });
+    
+    console.log('🎯 Found', matches.length, 'matches for query:', query);
+    return matches;
 }
 
 async function useCurrentLocation() {
